@@ -1,0 +1,17 @@
+{
+  "name": "social-networking-kata",
+  "version": "1.0.0",
+  "description": "A console-based social networking application (similar to Twitter)",
+  "main": "main.js",
+  "scripts": {
+    "test": "node node_modules/jest/bin/jest.js \"app/.*\\.test\\.js$\""
+  },
+  "author": "Emanuele De Cupis",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^23.5.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
