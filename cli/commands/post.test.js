@@ -56,6 +56,24 @@ describe('Commands.Post', () => {
 
         })
 
+        test('should correctly format output', async () => {
+
+            const command = require('./post'),
+                person = 'Alice',
+                message = 'I love the weather today',
+                input = `${person} -> ${message}`,
+                execute = command(input)
+
+            const app = {
+                post: jest.fn(() => Promise.resolve())
+            }
+
+            const output = await execute(app)
+
+            expect(output).not.toBeDefined()
+
+        })
+
 
     })
 

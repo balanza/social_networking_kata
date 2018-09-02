@@ -1,4 +1,10 @@
-module.exports = ({ statusRepo, relationshipRepo }) => {
+const statusModel = require('../models/status')
+const relationshipModel = require('../models/relationship')
+
+module.exports = ({
+    statusRepo,
+    relationshipRepo
+}) => {
 
     required('statusRepo', statusRepo)
     isRepo('statusRepo', statusRepo)
@@ -7,24 +13,36 @@ module.exports = ({ statusRepo, relationshipRepo }) => {
 
 
     async function post(author, message) {
-        const status = { author, message, time: new Date() }
+        const status = statusModel.create(author, message)
+        //  console.log('status', status)
         return statusRepo.add(status)
     }
 
     async function read(author) {
-        return statusRepo.getByAuthor(author)
+        const result = await statusRepo.getAll({
+            author
+        })
+        //  console.log('read', result)
+        return result
     }
 
     async function follow(following, followed) {
-        const relationship = { following, followed }
+        const relationship = relationshipModel.create(following, followed)
         return relationshipRepo.add(relationship)
     }
 
     async function wall(person) {
-        const followed = await relationshipRepo.getFollowed(person)
+        const followed = await relationshipRepo.getAll({
+            following: person
+        }).then(e => e.map(x => x.followed))
+
         return await Promise.all([
-            statusRepo.getByAuthor(person),
-            ...followed.map(a => statusRepo.getByAuthor(a))
+            statusRepo.getAll({
+                author: person
+            }),
+            ...followed.map(a => statusRepo.getAll({
+                author: a
+            }))
         ]).then(flatten)
     }
 

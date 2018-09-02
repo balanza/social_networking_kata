@@ -6,11 +6,19 @@ module.exports = (input = '') => {
     if (parsed && parsed.length) {
         const person = parsed[1]
 
-        return (app) => app.read(person)
+        return (app) => app.read(person).then(formatResults)
 
     } else {
         return
     }
 
 
+}
+
+function formatResults(results){
+    return results.map(formatResult)
+}
+
+function formatResult(result){
+    return `${result.message} (${result.time.getTime()})`
 }

@@ -6,11 +6,20 @@ module.exports = (input = '') => {
     if (parsed && parsed.length) {
         const person = parsed[1]
 
-        return (app) => app.wall(person)
+        return (app) => app.wall(person).then(formatResults)
 
     } else {
         return
     }
 
 
+}
+
+
+function formatResults(results){
+    return results.map(formatResult)
+}
+
+function formatResult(result){
+    return `${result.author} - ${result.message} (${result.time.getTime()})`
 }

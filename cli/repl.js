@@ -1,29 +1,28 @@
+const repl = require('repl')
+
 const START_WITH = '> '
 
-module.exports = () => {
+module.exports = {
 
-    function attach(execute) {
+    attach: (execute) => {
         const options = {
             prompt: START_WITH,
-            eval = async (input, context, filename, callback) => {
-                const cmd = cleanInput(cmd)
+            terminal: true,
+            eval: async (input, context, filename, callback) => {
+                const cmd = cleanInput(input)
 
                 try {
                     const result = await execute(cmd)
-                    const output = formatOutput(result)
-                    callback(null, output)
+                    callback(null, result)
                 } catch (ex) {
                     callback(ex)
                 }
-            }
+            },
+            writer: formatOutput
 
         }
 
         repl.start(options)
-    }
-
-    return {
-        attach
     }
 }
 
@@ -32,5 +31,7 @@ function cleanInput(input) {
 }
 
 function formatOutput(result) {
-    return `${START_WITH}${result}`
+    if(!result || !result.length) return '' 
+    else if (Array.isArray(result)) return `${START_WITH}${result.join('\n'+START_WITH)}`
+    else return `${START_WITH}${result}`
 }

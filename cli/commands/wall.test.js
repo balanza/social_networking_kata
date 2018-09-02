@@ -52,6 +52,39 @@ describe('Commands.Wall', () => {
 
         })
 
+        test('should correctly format output (not empty)', async () => {
+
+            const command = require('./wall'),
+                person = 'Charlie',
+                followedPerson = 'Alice'
+                input = `${person} wall`,
+                execute = command(input),
+                status1 = {
+                    author: person,
+                    message: 'I\'m in New York today! Anyone wants to have a coffee?',
+                    time: new Date(1535902978192)
+                },
+                status2 = {
+                    author: followedPerson,
+                    message: 'I love the weather today',
+                    time: new Date(1535902987426)
+                }
+
+            const app = {
+                wall: jest.fn(() => Promise.resolve([
+                    status2, status1
+                ]))
+            }
+
+            const output = await execute(app)
+
+            expect(output).toEqual([
+                'Charlie - I\'m in New York today! Anyone wants to have a coffee? (1535902978192)',
+                'Alice - I love the weather today (1535902987426)'
+            ])
+
+        })
+
 
     })
 

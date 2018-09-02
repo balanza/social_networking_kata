@@ -8,8 +8,8 @@ const deps = (statusRepo = createMockRepo(), relationshipRepo = createMockRepo()
 
 const status = (author, message, time) => ({ author, message, time })
 
-describe('App', () => {
-
+describe.skip('App', () => {
+    
     describe('creation', () => {
 
         test('should create without errors', () => {
