@@ -4,7 +4,7 @@ describe('Commands.Read', () => {
 
         test('should create without errors', () => {
 
-            const requireModule = () => require('./post');
+            const requireModule = () => require('./read');
 
             expect(requireModule).not.toThrow();
             expect(requireModule()).toEqual(expect.any(Function));

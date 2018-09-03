@@ -1,4 +1,5 @@
-const Joi = require('joi');
+import * as Joi from "joi";
+import { Relationship } from '../interfaces';
 
 const schema = Joi.object().keys({
     following: Joi.string().alphanum().required(),
@@ -6,7 +7,7 @@ const schema = Joi.object().keys({
     time: Joi.date().required()
 })
 
-function create(following, followed, timestamp = new Date().getTime()) {
+function create(following: string, followed: string, timestamp = new Date().getTime()): Relationship {
     const raw = {
         following,
         followed,
@@ -19,15 +20,15 @@ function create(following, followed, timestamp = new Date().getTime()) {
     else return raw
 }
 
-function isValid(raw) {
+function isValid(raw: object): boolean {
     return !validate(raw).error
 }
 
-function validate(raw) {
+function validate(raw: object) {
     return Joi.validate(raw, schema)
 }
 
-module.exports = {
+export {
     create,
     validate,
     isValid

@@ -14,7 +14,7 @@ describe.skip('App', () => {
 
         test('should create without errors', () => {
 
-            const requireModule = () => require('./index');
+            const requireModule = () => require('.');
 
             expect(requireModule).not.toThrow();
             expect(requireModule()).toEqual(expect.any(Function));
@@ -23,7 +23,7 @@ describe.skip('App', () => {
 
         test('should throw if not valid dependencies are provided', () => {
 
-            const factory = require('./index')
+            const factory = require('.')
 
             const cases = [undefined, { not: 'valid' }, createMockRepo()]
             const ok = (i, j) => i == 2 && j == 2
@@ -44,14 +44,14 @@ describe.skip('App', () => {
 
         test('exposes post() method', () => {
             const dependencies = deps(),
-                app = require('./index')(dependencies)
+                app = require('.')(dependencies)
 
             expect(app.post).toEqual(expect.any(Function));
         })
 
         test('call repo.add ', async () => {
             const dependencies = deps(),
-                app = require('./index')(dependencies),
+                app = require('.')(dependencies),
                 author = 'Alice',
                 message = 'I love the weather today'
 
@@ -71,7 +71,7 @@ describe.skip('App', () => {
 
         test('exposes read() method', () => {
             const dependencies = deps(),
-                app = require('./index')(dependencies)
+                app = require('.')(dependencies)
 
             expect(app.read).toEqual(expect.any(Function));
         })
@@ -85,7 +85,7 @@ describe.skip('App', () => {
             ]
 
             const dependencies = deps(createMockRepo([...byAlice, ...byBob])),
-                app = require('./index')(dependencies),
+                app = require('.')(dependencies),
                 author = 'Bob'
 
             const result = await app.read(author)
@@ -104,14 +104,14 @@ describe.skip('App', () => {
 
         test('exposes read() method', () => {
             const dependencies = deps(),
-                app = require('./index')(dependencies)
+                app = require('.')(dependencies)
 
             expect(app.follow).toEqual(expect.any(Function));
         })
 
         test('call repo.follow ', async () => {
             const dependencies = deps(),
-                app = require('./index')(dependencies),
+                app = require('.')(dependencies),
                 following = 'Alice',
                 followed = 'Bob'
 
@@ -130,7 +130,7 @@ describe.skip('App', () => {
 
         test('exposes wall() method', () => {
             const dependencies = deps(),
-                app = require('./index')(dependencies)
+                app = require('.')(dependencies)
 
             expect(app.wall).toEqual(expect.any(Function));
         })
@@ -150,7 +150,7 @@ describe.skip('App', () => {
             const dependencies = deps(
                 createMockRepo([...byAlice, ...byBob, ...byCharlie])
             ),
-                app = require('./index')(dependencies)
+                app = require('.')(dependencies)
 
             await app.follow('Charlie', 'Alice')
             const result = await app.wall('Charlie')

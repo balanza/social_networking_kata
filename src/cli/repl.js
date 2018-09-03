@@ -8,17 +8,20 @@ module.exports = {
         const options = {
             prompt: START_WITH,
             terminal: true,
+            writer: formatOutput,
             eval: async (input, context, filename, callback) => {
-                const cmd = cleanInput(input)
-
                 try {
+                    
+                    const cmd = cleanInput(input)
                     const result = await execute(cmd)
-                    callback(null, result)
+
+                    if (empty(result)) callback(null)
+                    else callback(null, result)
+
                 } catch (ex) {
                     callback(ex)
                 }
-            },
-            writer: formatOutput
+            }
 
         }
 
@@ -30,8 +33,12 @@ function cleanInput(input) {
     return input.replace(/\n/gi, '')
 }
 
+function empty(result) {
+    return !result || !result.length
+}
+
 function formatOutput(result) {
-    if(!result || !result.length) return '' 
+    if (empty(result)) return ''
     else if (Array.isArray(result)) return `${START_WITH}${result.join('\n'+START_WITH)}`
     else return `${START_WITH}${result}`
 }

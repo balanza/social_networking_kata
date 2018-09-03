@@ -1,10 +1,16 @@
-const statusModel = require('../models/status')
-const relationshipModel = require('../models/relationship')
+import * as statusModel from '../models/status'
+import * as relationshipModel from '../models/relationship'
+import { App, Status, Relationship, Repository } from '../interfaces'
 
-module.exports = ({
-    statusRepo,
-    relationshipRepo
-}) => {
+
+type appDependencies = {
+    statusRepo: Repository<Status>,
+    relationshipRepo: Repository<Relationship>
+}
+
+const appFactory = (
+    { statusRepo, relationshipRepo }: appDependencies
+): App => {
 
     required('statusRepo', statusRepo)
     isRepo('statusRepo', statusRepo)
@@ -12,21 +18,19 @@ module.exports = ({
     isRepo('relationshipRepo', relationshipRepo)
 
 
-    async function post(author, message) {
+    async function post(author: string, message: string) {
         const status = statusModel.create(author, message)
-        //  console.log('status', status)
         return statusRepo.add(status)
     }
 
-    async function read(author) {
+    async function read(author: string) {
         const result = await statusRepo.getAll({
             author
         })
-        //  console.log('read', result)
         return result
     }
 
-    async function follow(following, followed) {
+    async function follow(following: string, followed: string) {
         const relationship = relationshipModel.create(following, followed)
         return relationshipRepo.add(relationship)
     }
@@ -69,3 +73,5 @@ function isRepo(label, target) {
 function flatten(arr) {
     return arr.reduce((p, e) => p.concat(e))
 }
+
+export default appFactory

@@ -10,7 +10,7 @@ module.exports = (input = '') => {
         return (app) => app.post(person, message)
 
     } else {
-        return 
+        return
     }
 
 
