@@ -73,6 +73,10 @@ describe('Commands.Read', () => {
 
         test('should correctly format output (not empty)', async () => {
 
+            const now = new Date(),
+                minutesAgo = (m)=> new Date(now.getTime()-m*60*1000),
+                secondsAgo = (m)=> new Date(now.getTime()-m*1000)
+
             const command = require('./read'),
                 person = 'Bob',
                 input = `${person}`,
@@ -80,12 +84,12 @@ describe('Commands.Read', () => {
                 status1 = {
                     author: person,
                     message: 'Good game though.',
-                    time: new Date(1535902978192)
+                    time: minutesAgo(2)
                 },
                 status2 = {
                     author: person,
                     message: 'Damn! We lost!',
-                    time: new Date(1535902987426)
+                    time: minutesAgo(3)
                 }
 
             const app = {
@@ -97,8 +101,8 @@ describe('Commands.Read', () => {
             const output = await execute(app)
 
             expect(output).toEqual([
-                'Good game though. (1535902978192)',
-                'Damn! We lost! (1535902987426)'
+                'Good game though. (2 minutes ago)',
+                'Damn! We lost! (3 minutes ago)'
             ])
 
         })

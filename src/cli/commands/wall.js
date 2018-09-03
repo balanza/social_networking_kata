@@ -1,3 +1,8 @@
+const {
+    formatStatusWithName,
+    formatStatusList
+} = require('../lib/formatter')
+
 module.exports = (input = '') => {
 
     const pattern = /^\s*([A-Za-z0-0\-\_]+)\s+wall\s*\n*$/gi;
@@ -6,20 +11,11 @@ module.exports = (input = '') => {
     if (parsed && parsed.length) {
         const person = parsed[1]
 
-        return (app) => app.wall(person).then(formatResults)
+        return (app) => app.wall(person)
+            .then(e => formatStatusList(e, formatStatusWithName))
 
     } else {
         return
     }
 
-
-}
-
-
-function formatResults(results) {
-    return results ? results.map(formatResult) : []
-}
-
-function formatResult(result) {
-    return `${result.author} - ${result.message} (${result.time.getTime()})`
 }

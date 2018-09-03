@@ -1,3 +1,7 @@
+const {
+    formatStatus,
+    formatStatusList
+} = require('../lib/formatter')
 module.exports = (input = '') => {
 
     const pattern = /^\s*([A-Za-z0-0\-\_]+)\s*\n*$/gi;
@@ -6,7 +10,8 @@ module.exports = (input = '') => {
     if (parsed && parsed.length) {
         const person = parsed[1]
 
-        return (app) => app.read(person).then(formatResults)
+        return (app) => app.read(person)
+        .then(e => formatStatusList(e, formatStatus))
 
     } else {
         return

@@ -54,6 +54,10 @@ describe('Commands.Wall', () => {
 
         test('should correctly format output (not empty)', async () => {
 
+            const now = new Date(),
+                minutesAgo = (m)=> new Date(now.getTime()-m*60*1000),
+                secondsAgo = (m)=> new Date(now.getTime()-m*1000)
+
             const command = require('./wall'),
                 person = 'Charlie',
                 followedPerson = 'Alice'
@@ -62,12 +66,12 @@ describe('Commands.Wall', () => {
                 status1 = {
                     author: person,
                     message: 'I\'m in New York today! Anyone wants to have a coffee?',
-                    time: new Date(1535902978192)
+                    time: minutesAgo(5)
                 },
                 status2 = {
                     author: followedPerson,
                     message: 'I love the weather today',
-                    time: new Date(1535902987426)
+                    time: minutesAgo(6)
                 }
 
             const app = {
@@ -79,8 +83,8 @@ describe('Commands.Wall', () => {
             const output = await execute(app)
 
             expect(output).toEqual([
-                'Alice - I love the weather today (1535902987426)',
-                'Charlie - I\'m in New York today! Anyone wants to have a coffee? (1535902978192)'
+                'Alice - I love the weather today (6 minutes ago)',
+                'Charlie - I\'m in New York today! Anyone wants to have a coffee? (5 minutes ago)'
             ])
 
         })
