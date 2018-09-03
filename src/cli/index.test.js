@@ -69,7 +69,7 @@ describe('App', () => {
                 }),
                 command = undefined
 
-            expect(() => cli.execute(command)).toThrow()
+            expect(cli.execute(command)).rejects.toBeDefined()
 
         })
 
@@ -82,7 +82,7 @@ describe('App', () => {
                 }),
                 command = 'unknown command'
 
-            expect(() => cli.execute(command)).toThrow()
+            expect(cli.execute(command)).rejects.toBeDefined()
 
         })
 

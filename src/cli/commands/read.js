@@ -15,10 +15,10 @@ module.exports = (input = '') => {
 
 }
 
-function formatResults(results){
-    return results.map(formatResult)
+function formatResults(results) {
+    return results ? results.map(formatResult) : []
 }
 
-function formatResult(result){
+function formatResult(result) {
     return `${result.message} (${result.time.getTime()})`
 }

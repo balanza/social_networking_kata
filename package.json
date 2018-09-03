@@ -4,15 +4,35 @@
   "description": "A console-based social networking application (similar to Twitter)",
   "main": "main.js",
   "scripts": {
-    "test": "node node_modules/jest/bin/jest.js"
+    "test": "node node_modules/jest/bin/jest.js  \"src/.*\\.test.*$\"",
+    "build": "./node_modules/typescript/bin/tsc",
+    "start": "node dist/main.js"
   },
   "author": "Emanuele De Cupis",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^23.5.0"
+    "@types/jest": "^23.3.1",
+    "jest": "^23.5.0",
+    "ts-jest": "^23.1.4",
+    "typescript": "^3.0.3"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "collectCoverage": true,
+    "coverageDirectory": "./coverage",
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   },
   "dependencies": {
     "joi": "^13.6.0",
