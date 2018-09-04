@@ -11,7 +11,7 @@ module.exports = (input = '') => {
         const person = parsed[1]
 
         return (app) => app.read(person)
-        .then(e => formatStatusList(e, formatStatus))
+            .then(e => formatStatusList(e, formatStatus))
 
     } else {
         return

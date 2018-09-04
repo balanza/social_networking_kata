@@ -27,7 +27,7 @@ const appFactory = (
         const result = await statusRepo.getAll({
             author
         })
-        return result
+        return result.sort(sortTimeDescending)
     }
 
     async function follow(following: string, followed: string) {
@@ -47,7 +47,11 @@ const appFactory = (
             ...followed.map(a => statusRepo.getAll({
                 author: a
             }))
-        ]).then(flatten)
+        ]).then(flatten).then(e => e.sort(sortTimeDescending))
+    }
+
+    function sortTimeDescending(a: Status, b: Status): number {
+        return b.time.getTime() - a.time.getTime()
     }
 
     return {

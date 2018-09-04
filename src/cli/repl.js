@@ -15,7 +15,8 @@ module.exports = {
 
                     const cmd = cleanInput(input)
                     const result = await execute(cmd)
-                    callback(null, result)
+                    if (empty(result)) callback(null)
+                    else callback(null, result)
 
                 } catch (ex) {
                     callback(ex)

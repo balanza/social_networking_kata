@@ -8,7 +8,8 @@ export default (config) => {
             port,
             name
         } = config
-        MongoClient.connect(`mongodb://${host}:${port}/${name}`, { useNewUrlParser: true });
+        const client = await MongoClient.connect(`mongodb://${host}:${port}`, { useNewUrlParser: true });
+        return client.db(name)
     }
 
     return { getConnection }

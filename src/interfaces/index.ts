@@ -11,7 +11,7 @@ export interface Status {
 }
 
 export interface Repository<Model> {
-    getAll(query?: object): Promise<Array<Model>>
+    getAll(query: any): Promise<Array<Model>>
     add(e: Model): Promise<void>
 }
 

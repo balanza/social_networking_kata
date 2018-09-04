@@ -1,29 +1,27 @@
-import { MongoClient } from 'mongodb'
-import * as MongoInMemory from 'mongo-in-memory'
+import * as mongodb from 'mongo-mock'
 
 export default (config) => {
+
     async function getConnection() {
-        const {
-            port,
-            name
-        } = config
-        const uri = await startServer({ port, name })
-        MongoClient.connect(uri, { useNewUrlParser: true });
+        return new Promise((resolve, reject) => {
+            const {
+                host,
+                port,
+                name
+            } = config
+            const MongoClient = mongodb.MongoClient
+            MongoClient.connect(
+                `mongodb://localhost:27017/snk`,
+                (err, db) => {
+                    if(err) reject(err)
+                    else resolve(db)
+                }
+            );
+
+        })
+
     }
 
     return { getConnection }
 
-}
-
-async function startServer({
-    port,
-    name
-}) {
-    return new Promise((resolve, reject) => {
-        const mongoServerInstance = new MongoInMemory(port);
-        mongoServerInstance.start((error, config) => {
-            if (error) reject(error)
-            else resolve(mongoServerInstance.getMongouri(name))
-        });
-    })
 }
