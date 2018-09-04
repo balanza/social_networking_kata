@@ -9,14 +9,13 @@ module.exports = {
             prompt: START_WITH,
             terminal: true,
             writer: formatOutput,
+            ignoreUndefined: true,
             eval: async (input, context, filename, callback) => {
                 try {
-                    
+
                     const cmd = cleanInput(input)
                     const result = await execute(cmd)
-
-                    if (empty(result)) callback(null)
-                    else callback(null, result)
+                    callback(null, result)
 
                 } catch (ex) {
                     callback(ex)
@@ -38,7 +37,7 @@ function empty(result) {
 }
 
 function formatOutput(result) {
-    if (empty(result)) return ''
-    else if (Array.isArray(result)) return `${START_WITH}${result.join('\n'+START_WITH)}`
+    if (empty(result)) return undefined
+    else if (Array.isArray(result)) return `${START_WITH}${result.join('\n' + START_WITH)}`
     else return `${START_WITH}${result}`
 }
