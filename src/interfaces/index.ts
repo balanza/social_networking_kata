@@ -15,6 +15,12 @@ export interface Repository<Model> {
     add(e: Model): Promise<void>
 }
 
+export interface DataSource {
+
+    getConnection(): Promise<any>
+
+}
+
 export interface App {
 
     post(author: string, message:string): Promise<void>
