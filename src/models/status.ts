@@ -1,5 +1,5 @@
 import * as Joi from "joi";
-import { Status } from '../interfaces';
+import { Status, Model } from '../interfaces';
 
 const schema = Joi.object().keys({
     author: Joi.string().alphanum().required(),
@@ -7,17 +7,17 @@ const schema = Joi.object().keys({
     time: Joi.date().required()
 })
 
-function create(author: string, message: string, timestamp = new Date().getTime()): Status {
-    const raw = {
-        author,
-        message,
-        time: new Date(timestamp)
+function create(raw): Status {
+    const item = {
+        author: raw.author,
+        message: raw.message,
+        time: raw.time || new Date()
     }
     const {
         error
-    } = validate(raw)
-    if (error) throw `Error creating Status: ${error}`
-    else return raw
+    } = validate(item)
+    if (error) throw `Error creating Relationship: ${error}`
+    else return item
 }
 
 function isValid(raw: object): boolean {
@@ -28,8 +28,13 @@ function validate(raw: object) {
     return Joi.validate(raw, schema)
 }
 
-export {
-    create,
-    validate,
-    isValid
+function key(item: Status) {
+    return undefined
 }
+
+const StatusModel: Model<Status> = {
+    create,
+    key
+}
+
+export default StatusModel

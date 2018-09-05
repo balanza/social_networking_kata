@@ -10,9 +10,9 @@ export interface Status {
     time: Date
 }
 
-export interface Repository<Model> {
-    getAll(query: any): Promise<Array<Model>>
-    add(e: Model): Promise<void>
+export interface Repository<T> {
+    getAll(query: any): Promise<Array<T>>
+    add(e: T): Promise<void>
 }
 
 export interface DataSource {
@@ -21,14 +21,21 @@ export interface DataSource {
 
 }
 
+type Key = object
+type NoKey = undefined
+
+export interface Model<T> {
+    create(raw: object): T
+    key(item: T): Key | NoKey
+}
 export interface App {
 
-    post(author: string, message:string): Promise<void>
+    post(author: string, message: string): Promise<void>
 
-    read(author:string): Promise<Array<Status>>
+    read(author: string): Promise<Array<Status>>
 
-    follow(following:string, followed:string):Promise<void> 
+    follow(following: string, followed: string): Promise<void>
 
-    wall(person:string): Promise<Array<Status>> 
+    wall(person: string): Promise<Array<Status>>
 
 }

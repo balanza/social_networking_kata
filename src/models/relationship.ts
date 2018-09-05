@@ -1,5 +1,5 @@
 import * as Joi from "joi";
-import { Relationship } from '../interfaces';
+import { Relationship, Model } from '../interfaces';
 
 const schema = Joi.object().keys({
     following: Joi.string().alphanum().required(),
@@ -7,17 +7,17 @@ const schema = Joi.object().keys({
     time: Joi.date().required()
 })
 
-function create(following: string, followed: string, timestamp = new Date().getTime()): Relationship {
-    const raw = {
-        following,
-        followed,
-        time: new Date(timestamp)
+function create(raw): Relationship {
+    const item = {
+        followed: raw.followed,
+        following: raw.following,
+        time: raw.time || new Date()
     }
     const {
         error
-    } = validate(raw)
+    } = validate(item)
     if (error) throw `Error creating Relationship: ${error}`
-    else return raw
+    else return item
 }
 
 function isValid(raw: object): boolean {
@@ -28,8 +28,15 @@ function validate(raw: object) {
     return Joi.validate(raw, schema)
 }
 
-export {
-    create,
-    validate,
-    isValid
+function key(item: Relationship) {
+    const { followed, following } = item
+    return { followed, following }
 }
+
+
+const RelationshipModel: Model<Relationship> = {
+    create,
+    key
+}
+
+export default RelationshipModel

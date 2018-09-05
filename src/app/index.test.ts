@@ -1,36 +1,37 @@
-const createMockRepo = (data = []) => ({
+import { Status, Repository, Relationship } from "../interfaces";
+import appFactory from './index'
+
+
+const query = (f) => (e) => Object.keys(f).every(k => e[k] == f[k])
+
+const createMockRepo = <T>(data: Array<T> = []): Repository<T> => ({
     add: jest.fn(async (e) => data.push(e)),
-    getByAuthor: jest.fn(async (a) => data.filter(e => e.author == a)),
-    getFollowed: jest.fn(async (a) => data.filter(e => e.following == a).map(e=>e.followed))
+    getAll: jest.fn(async (f) => data.filter(query(f))),
 })
 
-const deps = (statusRepo = createMockRepo(), relationshipRepo = createMockRepo()) => ({ statusRepo, relationshipRepo })
 
-const status = (author, message, time) => ({ author, message, time })
+const deps = (
+    statusRepo = createMockRepo<Status>(),
+    relationshipRepo = createMockRepo<Relationship>()
+) => ({ statusRepo, relationshipRepo })
 
-describe.skip('App', () => {
-    
+
+const status = (author, message, time = new Date()) => ({ author, message, time })
+
+describe('App', () => {
+
     describe('creation', () => {
-
-        test('should create without errors', () => {
-
-            const requireModule = () => require('.');
-
-            expect(requireModule).not.toThrow();
-            expect(requireModule()).toEqual(expect.any(Function));
-
-        })
 
         test('should throw if not valid dependencies are provided', () => {
 
-            const factory = require('.')
+            const appFactory = require('./index')
 
             const cases = [undefined, { not: 'valid' }, createMockRepo()]
             const ok = (i, j) => i == 2 && j == 2
 
             for (let i = 0; i < cases.length; i++)
                 for (let j = 0; j < cases.length; j++)
-                    if (!ok(i, j)) expect(() => factory({
+                    if (!ok(i, j)) expect(() => appFactory({
                         statusRepo: cases[i],
                         relationshipRepo: cases[j]
                     })).toThrow()
@@ -44,14 +45,14 @@ describe.skip('App', () => {
 
         test('exposes post() method', () => {
             const dependencies = deps(),
-                app = require('.')(dependencies)
+                app = appFactory(dependencies)
 
             expect(app.post).toEqual(expect.any(Function));
         })
 
         test('call repo.add ', async () => {
             const dependencies = deps(),
-                app = require('.')(dependencies),
+                app = appFactory(dependencies),
                 author = 'Alice',
                 message = 'I love the weather today'
 
@@ -71,7 +72,7 @@ describe.skip('App', () => {
 
         test('exposes read() method', () => {
             const dependencies = deps(),
-                app = require('.')(dependencies)
+                app = appFactory(dependencies)
 
             expect(app.read).toEqual(expect.any(Function));
         })
@@ -85,7 +86,7 @@ describe.skip('App', () => {
             ]
 
             const dependencies = deps(createMockRepo([...byAlice, ...byBob])),
-                app = require('.')(dependencies),
+                app = appFactory(dependencies),
                 author = 'Bob'
 
             const result = await app.read(author)
@@ -104,14 +105,14 @@ describe.skip('App', () => {
 
         test('exposes read() method', () => {
             const dependencies = deps(),
-                app = require('.')(dependencies)
+                app = appFactory(dependencies)
 
             expect(app.follow).toEqual(expect.any(Function));
         })
 
         test('call repo.follow ', async () => {
             const dependencies = deps(),
-                app = require('.')(dependencies),
+                app = appFactory(dependencies),
                 following = 'Alice',
                 followed = 'Bob'
 
@@ -119,7 +120,8 @@ describe.skip('App', () => {
 
             expect(dependencies.relationshipRepo.add).toBeCalledWith({
                 following,
-                followed
+                followed,
+                time: expect.any(Date)
             })
 
         })
@@ -130,7 +132,7 @@ describe.skip('App', () => {
 
         test('exposes wall() method', () => {
             const dependencies = deps(),
-                app = require('.')(dependencies)
+                app = appFactory(dependencies)
 
             expect(app.wall).toEqual(expect.any(Function));
         })
@@ -150,7 +152,7 @@ describe.skip('App', () => {
             const dependencies = deps(
                 createMockRepo([...byAlice, ...byBob, ...byCharlie])
             ),
-                app = require('.')(dependencies)
+                app = appFactory(dependencies)
 
             await app.follow('Charlie', 'Alice')
             const result = await app.wall('Charlie')

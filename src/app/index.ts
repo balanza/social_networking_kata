@@ -1,5 +1,5 @@
-import * as statusModel from '../models/status'
-import * as relationshipModel from '../models/relationship'
+import StatusModel from '../models/status'
+import RelationshipModel from '../models/relationship'
 import { App, Status, Relationship, Repository } from '../interfaces'
 
 
@@ -19,7 +19,7 @@ const appFactory = (
 
 
     async function post(author: string, message: string) {
-        const status = statusModel.create(author, message)
+        const status = StatusModel.create({ author, message })
         return statusRepo.add(status)
     }
 
@@ -31,22 +31,22 @@ const appFactory = (
     }
 
     async function follow(following: string, followed: string) {
-        const relationship = relationshipModel.create(following, followed)
+        const relationship = RelationshipModel.create({ following, followed })
         return relationshipRepo.add(relationship)
     }
 
     async function wall(person) {
-        const followed = await relationshipRepo.getAll({
-            following: person
-        }).then(e => e.map(x => x.followed))
+        const followed =
+            await relationshipRepo
+                .getAll({ following: person })
+                .then(e => e.map(x => x.followed))
+
+        const byPerson = statusRepo.getAll({ author: person })
+        const byFollowedPersons = followed.map(author => statusRepo.getAll({ author }))
 
         return await Promise.all([
-            statusRepo.getAll({
-                author: person
-            }),
-            ...followed.map(a => statusRepo.getAll({
-                author: a
-            }))
+            byPerson,
+            ...byFollowedPersons
         ]).then(flatten).then(e => e.sort(sortTimeDescending))
     }
 
@@ -60,8 +60,6 @@ const appFactory = (
         follow,
         wall
     }
-
-
 
 }
 
