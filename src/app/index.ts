@@ -1,6 +1,7 @@
 import StatusModel from '../models/status'
 import RelationshipModel from '../models/relationship'
 import { App, Status, Relationship, Repository } from '../interfaces'
+import { EventEmitter } from 'events';
 
 
 type appDependencies = {
@@ -12,6 +13,8 @@ const appFactory = (
     { statusRepo, relationshipRepo }: appDependencies
 ): App => {
 
+    const events: EventEmitter = new EventEmitter()
+
     required('statusRepo', statusRepo)
     isRepo('statusRepo', statusRepo)
     required('relationshipRepo', relationshipRepo)
@@ -20,7 +23,8 @@ const appFactory = (
 
     async function post(author: string, message: string) {
         const status = StatusModel.create({ author, message })
-        return statusRepo.add(status)
+        await statusRepo.add(status)
+        events.emit('status:posted', status)
     }
 
     async function read(author: string) {
@@ -32,7 +36,8 @@ const appFactory = (
 
     async function follow(following: string, followed: string) {
         const relationship = RelationshipModel.create({ following, followed })
-        return relationshipRepo.add(relationship)
+        await relationshipRepo.add(relationship)
+        events.emit('person:followed', relationship)   
     }
 
     async function wall(person) {
@@ -55,6 +60,7 @@ const appFactory = (
     }
 
     return {
+        events,
         post,
         read,
         follow,

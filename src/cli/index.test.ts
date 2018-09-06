@@ -1,5 +1,6 @@
 import cliFactory from './index'
 import { App } from '../interfaces/index';
+import { EventEmitter } from 'events';
 
 declare function require(name: string)
 
@@ -7,7 +8,8 @@ const createMockApp = (): App => ({
     post: jest.fn(() => Promise.resolve()),
     read: jest.fn(() => Promise.resolve([])),
     follow: jest.fn(() => Promise.resolve()),
-    wall: jest.fn(() => Promise.resolve([]))
+    wall: jest.fn(() => Promise.resolve([])),
+    events: new EventEmitter()
 })
 
 describe('App', () => {

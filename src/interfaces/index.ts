@@ -1,3 +1,5 @@
+import { EventEmitter } from "events";
+
 export interface Relationship {
     following: string
     followed: string
@@ -38,4 +40,5 @@ export interface App {
 
     wall(person: string): Promise<Array<Status>>
 
+    events: EventEmitter
 }
